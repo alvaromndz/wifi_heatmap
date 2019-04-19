@@ -5,7 +5,7 @@ LDFLAGS = -liw
 all: scan_aps
 
 scan_aps: scan_aps.o
-	$(CC) $(LDFLAGS) -o $@ $^
+	$(CC) -o $@ $^ $(LDFLAGS) 
 
 %.o: %.c
 	$(CC) -c -o $@ $< $(CCFLAGS)

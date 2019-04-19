@@ -15,9 +15,12 @@ tfBuffer = tf2_ros.Buffer()
 listener = tf2_ros.TransformListener(tfBuffer)
 regex_lq = re.compile(r"(\w+),\s*([\w:]+),\s*(\d+)")
 while not rospy.is_shutdown():
-    cproc = subprocess.run(['./scan_aps', 'wlp2s0'], capture_output=True)
-    if cproc.returncode == 0 and cproc.stdout is not None:
-        strengths = str(cproc.stdout, 'utf-8')
-        pos = tfBuffer.lookup_transform("map", 'base_link', rospy.Time(0), rospy.Duration(1.0))
-        print('{"x":%.2f, "y":%.2f, "strengths":%s},' % (pos.transform.translation.x, pos.transform.translation.y, lq))
-        sleep(0.5)
+    sleep(0.5)
+    try:
+    	out = subprocess.check_output(['./src/wifi_heatmap/scripts/scan_aps', 'wlp2s0'])
+    except subprocess.CalledProcessError:
+	continue
+
+    strengths = out.encode('utf-8')
+    pos = tfBuffer.lookup_transform("map", 'base_link', rospy.Time(0), rospy.Duration(1.0))
+    print('{"x":%.2f, "y":%.2f, "strengths":%s},' % (pos.transform.translation.x, pos.transform.translation.y, strengths))
