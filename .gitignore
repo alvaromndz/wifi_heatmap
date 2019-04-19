@@ -1,0 +1,4 @@
+scripts/scan_aps
+*.o
+*ipynb*
+.vscode/*

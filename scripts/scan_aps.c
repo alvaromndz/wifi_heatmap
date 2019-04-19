@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
   result = head.result;
   while (NULL != result) {
     if (result->has_stats && result->b.has_essid && result->has_ap_addr){
-	   printf("%s, %s, %u\n", result->b.essid, 
+	   printf("{\"SSID\":\"%s\", \"MAC\":\"%s\", \"strength\":%u}\n", result->b.essid, 
 			   iw_sawap_ntop(&result->ap_addr, buffer),
 			   result->stats.qual.level);
     } 
