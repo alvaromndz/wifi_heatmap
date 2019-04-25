@@ -28,7 +28,7 @@ first = True
 while not rospy.is_shutdown():
     sleep(0.5)
     try:
-        out = subprocess.check_output(['./src/wifi_heatmap/scripts/scan_aps', 'wlp2s0'])
+        out = subprocess.check_output(['/home/turtlebot/catkin_ws/src/wifi_heatmap/scripts/scan_aps', 'wlp2s0'])
     except subprocess.CalledProcessError:
         continue
 
