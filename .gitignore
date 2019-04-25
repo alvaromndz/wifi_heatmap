@@ -2,6 +2,4 @@ scripts/scan_aps
 *.o
 *ipynb*
 .vscode/*
-.catkin_workspace
-build_isolated/*
-devel_isolated/*
+!scripts/make_heatmap.ipynb
