@@ -36,5 +36,5 @@ while not rospy.is_shutdown():
         print(',')
     strengths = '['  + (', '.join(out.encode('utf-8').strip().split('\n'))) + ']'
     pos = tfBuffer.lookup_transform("map", 'base_link', rospy.Time(0), rospy.Duration(1.0))
-    sys.stdout.write('{"x":%.2f, "y":%.2f, "strengths":%s}' % (pos.transform.translation.x, pos.transform.translation.y, strengths))
+    sys.stdout.write('{"x":%.2f, "y":%.2f, "aps":%s}' % (pos.transform.translation.x, pos.transform.translation.y, strengths))
     first = False

@@ -40,7 +40,7 @@ def main(args):
     with open(fname, "r") as read_file:
         data = json.load(read_file)
         for line in data:
-            strens = [link['strength'] for link in line['strengths'] 
+            strens = [link['strength'] for link in line['aps'] 
                             if link['SSID'] == AP]
 
             if len(strens) > 0:
