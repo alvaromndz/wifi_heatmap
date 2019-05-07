@@ -35,11 +35,11 @@ def main(f, scans_per):
         for i in range(scans_per):
             meas = scan()
             if meas is not None:
-                print('scan{}: {})} aps'.format(i, len(meas)))
+                print('scan{}: {} aps'.format(i, len(meas)))
             else:
                 print('scan{}: FAILED'.format(i))
             
-            strengths += '['  + (', '.join(meas)) + ']'
+            strengths = '['  + (', '.join(meas)) + ']'
 
             if not first:
                 f.write(',\n')
