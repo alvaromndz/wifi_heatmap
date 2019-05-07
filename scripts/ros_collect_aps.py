@@ -35,19 +35,19 @@ def main(args):
     listener = tf2_ros.TransformListener(tfBuffer)
 
 
-    print('[')
     first = True
-    with open(args.outfile) as f:
+    with open(args.outfile, 'w+') as f:
+    	f.write('[\n')
         while not rospy.is_shutdown():
-            input('Press enter to start scan...')
+            raw_input('Press enter to start scan...')
 
             pos = tfBuffer.lookup_transform("map", 'base_link', rospy.Time(0), rospy.Duration(1.0))
             for i in range(args.scans_per):
                 meas = scan()
                 if meas is not None:
-                    print(f'scan{i}: {len(meas)} aps')
+                    print('scan{}: {})} aps'.format(i, len(meas)))
                 else:
-                    print(f'scan{i}: FAILED')
+                    print('scan{}: FAILED'.format(i))
                 
                 strengths += '['  + (', '.join(meas)) + ']'
 
@@ -62,3 +62,6 @@ if __name__ == '__main__':
     parser.add_argument('-n', metavar='scans_per', type=int, default=5,
                             help='Number of scans to take per location')
     parser.add_argument('outfile', help='output filename')
+
+    args = parser.parse_args()
+    main(args)
