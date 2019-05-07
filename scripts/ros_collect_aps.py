@@ -43,7 +43,7 @@ def main(f, scans_per):
 
             if not first:
                 f.write(',\n')
-            f.write('{"x":%.2f, "y":%.2f, "aps":%s}' % (pos.transform.translation.x, pos.transform.translation.y, strengths))
+            f.write('{"x":%.2f, "y":%.2f, "z":%.2f, "w":%.2f, "aps":%s}' % (pos.transform.translation.x, pos.transform.translation.y, pos.transform.rotation.z, pos.transform.rotation.w, strengths))
             first = False
                 
 def kill_script(f):
