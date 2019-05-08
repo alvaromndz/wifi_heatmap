@@ -17,7 +17,7 @@ def scan():
     try:
         out = subprocess.check_output(['/home/turtlebot/catkin_ws/src/wifi_heatmap/scripts/scan_aps', 'wlp2s0'])
     except subprocess.CalledProcessError:
-        return None
+        return []
     
     return out.encode('utf-8').strip().split('\n')
 
@@ -33,7 +33,13 @@ def main(f, scans_per):
 
         pos = tfBuffer.lookup_transform("map", 'base_link', rospy.Time(0), rospy.Duration(1.0))
         for i in range(scans_per):
-            meas = scan()
+            meas = []
+            while len(meas) <= 1:
+            	meas = scan()
+		if len(meas) <= 1:
+                    print('only one...')
+                    time.sleep(1)
+
             if meas is not None:
                 print('scan{}: {} aps'.format(i, len(meas)))
             else:
