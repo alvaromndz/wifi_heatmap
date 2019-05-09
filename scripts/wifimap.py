@@ -12,17 +12,17 @@ class WifiMap(object):
 
         # build mapping of location -> list of measurements at location
         wmap_dict = defaultdict(list)
-        for z in wmap_json:
+        for m in wmap_json:
             aps = pd.Series({ap['MAC'] : ap['strength'] for ap in z['aps']})
             if len(aps) > 1: # if only one probably bad scan
-                wmap_dict[(z['x'], z['y'])].append(aps)
+                wmap_dict[(m['x'], m['y'], m['z'], m['w'])].append(aps)
 
         self.wmap_dict = {loc : pd.DataFrame(aps).mean() 
                              for loc, aps in wmap_dict.items()}
         
         self.wmap = pd.DataFrame(self.wmap_dict)
         self.wmap.fillna(0., inplace=True)
-        self.locs = np.array([[x, y] for x, y in self.wmap.columns])
+        self.locs = np.array([list(loc) for loc in self.wmap.columns])
     
     def probable_location(self, meas, n=5):
         if n <= 0 or n > self.wmap.columns.size:
