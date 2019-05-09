@@ -1,6 +1,20 @@
 #!/usr/bin/env python
 import rospy
 from geometry_msgs.msg import PoseWithCovarianceStamped
+from wifimap import WifiMap
+import json
+import subprocess
+import pandas as pd
+
+def scan():
+    try:
+        out = subprocess.check_output(['/home/turtlebot/catkin_ws/src/wifi_heatmap/scripts/scan_aps', 'wlp2s0'])
+    except subprocess.CalledProcessError:
+        return []
+    meas = out.encode('utf-8').strip().split('\n')
+    meas = json.loads('['  + (', '.join(meas)) + ']')
+    meas = {m['MAC'] : m['strength'] for m in meas}
+    return pd.Series(meas)
 
 def publish_wifi_pose():
     publisher = rospy.Publisher('initialpose', PoseWithCovarianceStamped, queue_size=10)
@@ -9,8 +23,12 @@ def publish_wifi_pose():
     wifi_pose = PoseWithCovarianceStamped()
     wifi_pose.header.frame_id = "map"
 
-    wifi_pose.pose.pose.position.x = 19.0
-    wifi_pose.pose.pose.position.y = 7.8
+
+    wmap = WifiMap('../data/dis.json')
+    x, y = wmap.probable_location(scan())
+
+    wifi_pose.pose.pose.position.x = x
+    wifi_pose.pose.pose.position.y = y
     wifi_pose.pose.pose.position.z = 0.0
 
     wifi_pose.pose.pose.orientation.x = 0.0
