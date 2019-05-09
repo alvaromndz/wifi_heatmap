@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import time
 import rospy
 from geometry_msgs.msg import PoseWithCovarianceStamped
 from wifimap import WifiMap
@@ -10,10 +11,12 @@ def scan():
     try:
         out = subprocess.check_output(['/home/turtlebot/catkin_ws/src/wifi_heatmap/scripts/scan_aps', 'wlp2s0'])
     except subprocess.CalledProcessError:
-        return []
+        return pd.Series([])
     meas = out.encode('utf-8').strip().split('\n')
     meas = json.loads('['  + (', '.join(meas)) + ']')
     meas = {m['MAC'] : m['strength'] for m in meas}
+    print('dict', meas)
+    print('series', pd.Series(meas))
     return pd.Series(meas)
 
 def publish_wifi_pose():
@@ -25,7 +28,12 @@ def publish_wifi_pose():
 
 
     wmap = WifiMap('../data/dis.json')
-    x, y = wmap.probable_location(scan())
+    meas = scan()
+    print(meas)
+    while meas.size <= 1:
+        time.sleep(2)
+	meas = scan()
+    x, y, z, w = wmap.probable_location(meas)
 
     wifi_pose.pose.pose.position.x = x
     wifi_pose.pose.pose.position.y = y
@@ -33,16 +41,18 @@ def publish_wifi_pose():
 
     wifi_pose.pose.pose.orientation.x = 0.0
     wifi_pose.pose.pose.orientation.y = 0.0
-    wifi_pose.pose.pose.orientation.z = -0.0025
-    wifi_pose.pose.pose.orientation.w = 0.9999
+    wifi_pose.pose.pose.orientation.z = z
+    wifi_pose.pose.pose.orientation.w = w
 
     # Using covariance from rviz default 2D pose estimate
-    wifi_pose.pose.covariance = [0.26914014135545017, -0.0018790245951834095, 0.0, 0.0, 0.0, 0.0, -0.0018790245951834095, 0.22791356565806353, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.06814058383126462]
+    wifi_pose.pose.covariance[0] = 10 # X deviation
+    wifi_pose.pose.covariance[7] = 10 # Y deviation
+    wifi_pose.pose.covariance[35] = 6 # YAW deviation
 
-    while not rospy.is_shutdown():  
+    if not rospy.is_shutdown():  
+        rate.sleep()
         rospy.loginfo(wifi_pose)
         publisher.publish(wifi_pose)
-        rate.sleep()
 
 if __name__ == '__main__':
     try:
