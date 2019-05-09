@@ -3,3 +3,8 @@ scripts/scan_aps
 *ipynb*
 .vscode/*
 !scripts/make_heatmap.ipynb
+.catkin_workspace
+build_isolated/
+data/dis1.json
+data/test.json
+devel_isolated/

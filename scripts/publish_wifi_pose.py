@@ -18,6 +18,9 @@ def publish_wifi_pose():
     wifi_pose.pose.pose.orientation.z = -0.0025
     wifi_pose.pose.pose.orientation.w = 0.9999
 
+    # Using covariance from rviz default 2D pose estimate
+    wifi_pose.pose.covariance = [0.26914014135545017, -0.0018790245951834095, 0.0, 0.0, 0.0, 0.0, -0.0018790245951834095, 0.22791356565806353, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.06814058383126462]
+
     while not rospy.is_shutdown():  
         rospy.loginfo(wifi_pose)
         publisher.publish(wifi_pose)
