@@ -13,7 +13,7 @@ class WifiMap(object):
         # build mapping of location -> list of measurements at location
         wmap_dict = defaultdict(list)
         for m in wmap_json:
-            aps = pd.Series({ap['MAC'] : ap['strength'] for ap in z['aps']})
+            aps = pd.Series({ap['MAC'] : ap['strength'] for ap in m['aps']})
             if len(aps) > 1: # if only one probably bad scan
                 wmap_dict[(m['x'], m['y'], m['z'], m['w'])].append(aps)
 
