@@ -90,7 +90,7 @@ def main(args):
     # plt.contourf(xi, yi, zi, cmap="RdYlGn", vmin=0., vmax=1., alpha=.4)
     plt.scatter(lx, ly, s=33, c='k', alpha=.7)
     ax.set_axis_off()
-    plt.savefig('heatmap.png', transparent=True)
+    plt.savefig(args.output, transparent=True)
 
 
 
@@ -98,5 +98,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='make heatmap from json')
     parser.add_argument('filename', type=str, help='json file to use for heatmap')
     parser.add_argument('AP', type=str, help='AP to use for heatmap')
+    parser.add_argument('-o', '--output', type=str, default='heatmap.png', help='output filename')
     args = parser.parse_args()
     main(args)
